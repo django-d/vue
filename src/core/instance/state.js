@@ -47,6 +47,7 @@ export function proxy (target: Object, sourceKey: string, key: string) {
 }
 
 export function initState (vm: Component) {
+  // 定义了 watchers 用来存储 watcher
   vm._watchers = []
   const opts = vm.$options
   if (opts.props) initProps(vm, opts.props)
@@ -246,9 +247,12 @@ function createComputedGetter (key) {
     const watcher = this._computedWatchers && this._computedWatchers[key]
     if (watcher) {
       if (watcher.dirty) {
+        // 将计算属性观察者 存入 被观察属性的 Dep 中
         watcher.evaluate()
       }
+      // 此时的target 是render 渲染观察者对象
       if (Dep.target) {
+        // 将渲染watcher 存入 依赖项的dep 中
         watcher.depend()
       }
       return watcher.value

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <script src="../dist/vue.min.js"></script>
+    </head>
+
+    <body>
+        <div id="app">
+            <div>{{d}}</div>
+            <div>{{arr}}</div>
+            <div>{{$options.render}}</div>
+            <div>{{b.a ?  b.a(d) : d}}</div>
+            <div>e: {{e === b}}</div>
+            <div>count: {{getCount()}}</div>
+            <div onclick="testWith()">with测试</div>
+            <test></test>
+        </div>
+        <button onclick="test()">点击测试</button>
+    </body>
+
+    <script>
+        var arr = [1,2,3]
+
+        // with({a:1, gg: function() {
+        //     for(let j= 0; j< 10000000; j++) {
+        //         this.a++
+        //             }
+        // }}) {
+        //     console.log(window.performance.now())
+        //     for(let j= 0; j< 10000000; j++) {
+        //         a++
+        //             }
+        //             console.log(window.performance.now())
+
+        // }
+
+        Vue.component('test', {
+            render(h) {
+                return h('div',[
+                    'haha',
+                    h('div',this.ch1.value),
+                    h('button',{
+                        on: {
+                            click: this.onChangeInject
+                        }
+                    },'点击修改')
+                ])
+            },
+            methods: {
+                onChangeInject() {
+                    console.log('点击了修改')
+                    this.ch1 = '22'
+                },
+                testCount() {
+                    let index = 0
+                    for(let i= 0; i< 1000000000; i++) {
+                        index ++ ;
+                    }
+                    return index
+                }
+            },
+            inject: {
+                ch1: 'ww'
+            }
+        })
+
+        
+        
+        var d = new Vue({
+            el:'#app',
+            // render(h) {
+            //     return h('div', [this.$options.render.toString(),
+            //     h('div', this.getCount()),
+            //         h('span','dddd')
+            //     ],)
+            // },
+            data:{
+                d: 100, 
+                arr,
+                b: {
+                    a:function(v) {
+                    return `${v}dd`
+                }
+                }
+            },
+            provide: {
+                ww: {
+                    value: 'aka'
+                }
+            },
+            computed: {
+                e() {
+                    return this.b
+                }
+            },
+            methods: {
+                tt() {
+                    for(let i= 0; i< 10000; i++) {
+                        this.d ++
+                    }
+                },
+                getCount() {
+                    console.log(window.performance.now())
+                    for(let i= 0; i< 10000000; i++) {
+                        d ++ ;
+                    }
+                    console.log(window.performance.now())
+                    return d
+                }
+            }
+        })
+
+       
+
+        console.log(d);
+        function test() {
+            arr.splice(0,1)
+            d.b = function() {
+                console.log(2)
+            }
+            console.log('click')
+        }
+        function testWith() {
+            d.d++;
+        }
+    </script>
+</html>

@@ -142,6 +142,8 @@ export function defineReactive (
   const dep = new Dep()
 
   const property = Object.getOwnPropertyDescriptor(obj, key)
+  // 疑问为什么不判断 writable 呢? 答: 因为writable = false 时修改属性, js 是直接报错的, 所以没必要判断了
+  // 如果对象不可删除, 将返回不在劫持
   if (property && property.configurable === false) {
     return
   }
